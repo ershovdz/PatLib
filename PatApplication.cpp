@@ -556,10 +556,10 @@ HRESULT DemoApp::CreateGridPatternBrush(
       D2D1::ColorF(D2D1::ColorF::Black),
       &pGridBrush
     );
-    ID2D1SolidColorBrush *pWhiteGridBrush = NULL;
+    ID2D1SolidColorBrush *pRedGridBrush = NULL;
     hr = pCompatibleRenderTarget->CreateSolidColorBrush(
-      D2D1::ColorF(D2D1::ColorF::White),
-      &pWhiteGridBrush
+      D2D1::ColorF(D2D1::ColorF::Red),
+      &pRedGridBrush
     );
     if (SUCCEEDED(hr))
     {
@@ -574,13 +574,15 @@ HRESULT DemoApp::CreateGridPatternBrush(
       auto families = pattern.families();
       double pointAddition = 0;
       index++;
-      double l = 6.f;
+      double l = 4.f;
+
 
       for (auto& f : families)
       {
         auto alignedFamilySegments = f.generateSegments(MaxRectE);
+        std::unordered_set<int> invalidSegmentIndices;
 
-        bool isOk = CTileChecker::checkFamilySegments(alignedFamilySegments, MaxRectE[0], MaxRectE[1]);
+        bool isOk = CTileChecker::checkFamilySegments(alignedFamilySegments, MaxRectE[0], MaxRectE[1], invalidSegmentIndices);
 
         for (int i = 0; i < alignedFamilySegments.size(); ++i)
         {
@@ -594,7 +596,7 @@ HRESULT DemoApp::CreateGridPatternBrush(
           pCompatibleRenderTarget->DrawLine(
             D2D1::Point2F(static_cast<float>(minW*(start.x - m_deltaX) - pointAddition), static_cast<float>(minH*(start.y - m_deltaY) - pointAddition)),
             D2D1::Point2F(static_cast<float>(minW*(end.x - m_deltaX) + pointAddition), static_cast<float>(minH*(end.y - m_deltaY) + pointAddition)),
-            pGridBrush,
+            invalidSegmentIndices.count(i) == 0 ? pGridBrush : pRedGridBrush,
             (float)l/*,
             pStrokeStyle*/);
         }
@@ -618,7 +620,7 @@ HRESULT DemoApp::CreateGridPatternBrush(
       }
 
       pGridBrush->Release();
-      pWhiteGridBrush->Release();
+      pRedGridBrush->Release();
     }
 
     pCompatibleRenderTarget->Release();

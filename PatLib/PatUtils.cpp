@@ -89,7 +89,7 @@ bool Point::operator<(const Point& p) const
   return x < p.x - cEpsilon || (std::abs(x - p.x) < cEpsilon && y < p.y - cEpsilon);
 }
 
-bool CTileChecker::checkFamilySegments(const std::vector<std::tuple<int, Point, Point>>& familySegments, double tileWidth, double tileHeight)
+bool CTileChecker::checkFamilySegments(const std::vector<std::tuple<int, Point, Point>>& familySegments, double tileWidth, double tileHeight, std::unordered_set<int>& invalidSegmentIndices)
 {
   auto segmentsForLeftSide = filterSegmentsBySideIntersection(familySegments, Point{ 0,0 }, Point{ 0,tileHeight });
   auto segmentsForRightSide = filterSegmentsBySideIntersection(familySegments, Point{ tileWidth, 0 }, Point{ tileWidth ,tileHeight });
@@ -98,29 +98,40 @@ bool CTileChecker::checkFamilySegments(const std::vector<std::tuple<int, Point, 
   auto segmentsForBottomSide = filterSegmentsBySideIntersection(familySegments, Point{ 0, tileHeight }, Point{ tileWidth ,tileHeight });
 
   return
-    checkSegmentsForOppositeSides(segmentsForLeftSide, segmentsForRightSide, tileWidth) &&
-    checkSegmentsForOppositeSides(segmentsForTopSide, segmentsForBottomSide, tileHeight);
+    checkSegmentsForOppositeSides(segmentsForLeftSide, segmentsForRightSide, tileWidth, invalidSegmentIndices) &&
+    checkSegmentsForOppositeSides(segmentsForTopSide, segmentsForBottomSide, tileHeight, invalidSegmentIndices);
 }
 
-std::vector<std::tuple<int, Point, Point, Point, Point>> CTileChecker::filterSegmentsBySideIntersection(const std::vector<std::tuple<int, Point, Point>>& familySegments, Point sideStart, Point sideEnd)
+std::vector<std::tuple<int, Point, Point, Point, Point, int>> CTileChecker::filterSegmentsBySideIntersection(const std::vector<std::tuple<int, Point, Point>>& familySegments, Point sideStart, Point sideEnd)
 {
-  std::vector<std::tuple<int, Point, Point, Point, Point>> result;
+  std::vector<std::tuple<int, Point, Point, Point, Point, int>> result;
 
-  for (auto& segment : familySegments)
+  for (int i = 0; i < familySegments.size(); ++i)
   {
+    auto&& segment = familySegments[i];
     Point firstIntersectPoint, secondIntersectPoint;
 
     if (intersect(std::get<1>(segment), std::get<2>(segment), sideStart, sideEnd, firstIntersectPoint, secondIntersectPoint))
-      result.push_back(std::make_tuple(std::get<0>(segment), std::get<1>(segment), std::get<2>(segment), firstIntersectPoint, secondIntersectPoint));
+      result.push_back(std::make_tuple(std::get<0>(segment), std::get<1>(segment), std::get<2>(segment), firstIntersectPoint, secondIntersectPoint, i));
   }
 
   return result;
 }
 
-bool CTileChecker::checkSegmentsForOppositeSides(const std::vector<std::tuple<int, Point, Point, Point, Point>>& firstSideSegments, const std::vector<std::tuple<int, Point, Point, Point, Point>>& secondSideSegments, double sidesDistance)
+bool CTileChecker::checkSegmentsForOppositeSides(const std::vector<std::tuple<int, Point, Point, Point, Point, int>>& firstSideSegments, const std::vector<std::tuple<int, Point, Point, Point, Point, int>>& secondSideSegments, double sidesDistance, std::unordered_set<int>& invalidSegmentIndices)
 {
   if (firstSideSegments.size() != secondSideSegments.size())
+  {
+    for(auto& segment : firstSideSegments)
+      invalidSegmentIndices.insert(std::get<5>(segment));
+
+    for (auto& segment : secondSideSegments)
+      invalidSegmentIndices.insert(std::get<5>(segment));
+
     return false;
+  }    
+
+  bool isOk = true;
 
   for (int i = 0; i < firstSideSegments.size(); ++i)
   {
@@ -175,10 +186,13 @@ bool CTileChecker::checkSegmentsForOppositeSides(const std::vector<std::tuple<in
     }
 
     if (!hasOppositeSegment)
-      return false;
+    {
+      invalidSegmentIndices.insert(std::get<5>(segmentForFirstSide));
+      isOk = false;
+    }      
   }
 
-  return true;
+  return isOk;
 }
 
 std::vector<std::tuple<int, Point, Point>> CTileLineAligner::getAligned(const std::vector<CPatLine>& lines, double tileWidth, double tileHeight)

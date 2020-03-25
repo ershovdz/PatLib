@@ -2,6 +2,7 @@
 
 #include "PatLine.h"
 #include <vector>
+#include <unordered_set>
 
 class CPatUtils
 {
@@ -22,11 +23,11 @@ struct Point
 class CTileChecker
 {
 public:
-  static bool checkFamilySegments(const std::vector<std::tuple<int, Point, Point>>& familySegments, double tileWidth, double tileHeight);
+  static bool checkFamilySegments(const std::vector<std::tuple<int, Point, Point>>& familySegments, double tileWidth, double tileHeight, std::unordered_set<int>& invalidSegmentIndices);
 
 private:
-  static std::vector<std::tuple<int, Point, Point, Point, Point>> filterSegmentsBySideIntersection(const std::vector<std::tuple<int, Point, Point>>& familySegments, Point sideStart, Point sideEnd);
-  static bool checkSegmentsForOppositeSides(const std::vector<std::tuple<int, Point, Point, Point, Point>>& firstSideSegments, const std::vector<std::tuple<int, Point, Point, Point, Point>>& secondSideSegments, double sidesDistance);
+  static std::vector<std::tuple<int, Point, Point, Point, Point, int>> filterSegmentsBySideIntersection(const std::vector<std::tuple<int, Point, Point>>& familySegments, Point sideStart, Point sideEnd);
+  static bool checkSegmentsForOppositeSides(const std::vector<std::tuple<int, Point, Point, Point, Point, int>>& firstSideSegments, const std::vector<std::tuple<int, Point, Point, Point, Point, int>>& secondSideSegments, double sidesDistance, std::unordered_set<int>& invalidSegmentIndices);
 };
 
 class CTileLineAligner
