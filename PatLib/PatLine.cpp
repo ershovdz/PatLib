@@ -73,9 +73,9 @@ void CPatLine::init(const std::vector<double>& maxLength)
     m_t0 = tmp;
   }
 
-  if (m_intervals.size() == 0)
+  if (m_intervals.size() < 2)
   {
-    m_definitions.push_back(std::make_tuple(0, m_t0 - std::max(maxLength[0], maxLength[1]), m_t1 + std::max(maxLength[0], maxLength[1])));
+    m_definitions.push_back(std::make_tuple(m_t0 - std::max(maxLength[0], maxLength[1]), m_t1 + std::max(maxLength[0], maxLength[1]), 0));
   }
   else
   {
@@ -89,7 +89,7 @@ void CPatLine::init(const std::vector<double>& maxLength)
         {
           auto point1 = originRight;//std::max(originRight, m_t0);
           auto point2 = originRight + interval;// std::min(originRight + interval, m_t1);
-          m_definitions.push_back(std::make_tuple(intervalIndex, std::min(point1, point2), std::max(point1, point2)));
+          m_definitions.push_back(std::make_tuple(std::min(point1, point2), std::max(point1, point2), intervalIndex));
         }
         originRight += abs(interval);
         if (originRight > m_t1 + 2.*cEpsilon)
@@ -108,7 +108,7 @@ void CPatLine::init(const std::vector<double>& maxLength)
         {
           auto point1 = originLeft;
           auto point2 = originLeft - interval;// std::max(originLeft - interval, m_t0);
-          m_definitions.push_back(std::make_tuple(intervalIndex, std::min(point1, point2), std::max(point1, point2)));
+          m_definitions.push_back(std::make_tuple(std::min(point1, point2), std::max(point1, point2), intervalIndex));
         }
         originLeft -= abs(interval);
         if (originLeft < m_t0)
@@ -180,7 +180,7 @@ std::vector<int> CPatLine::getIntervalNumbers(double arg)
     for (int i = 0; i < m_intervals.size(); i++)
     {
       currentPoint += abs(m_intervals[i]);
-      if (arg < currentPoint || abs(arg - currentPoint) < 0.001f)
+      if (arg < currentPoint || abs(arg - currentPoint) < 0.055f)
       {
         res.push_back(i);
         break;

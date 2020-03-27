@@ -165,23 +165,23 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
       if (intervalsMinus[0] == intervalsPlus[0])
       {
         auto lMinusLength = 0.f;
-        if (lMinus.m_t1 > std::get<2>(lMinus.m_definitions.back()))
+        if ((lMinus.m_t1 - std::get<1>(lMinus.m_definitions.back())) > 0.055)
         {
-          lMinusLength = (float)(lMinus.m_t1 - std::get<2>(lMinus.m_definitions.back()));
+          lMinusLength = (float)(lMinus.m_t1 - std::get<1>(lMinus.m_definitions.back()));
         }
         else
         {
-          lMinusLength = (float)(lMinus.m_t1 - std::get<1>(lMinus.m_definitions.back()));
+          lMinusLength = (float)(lMinus.m_t1 - std::get<0>(lMinus.m_definitions.back()));
         }
 
         auto lPlusLength = 0.f;
         if (lPlus.m_t0 < std::get<1>(lPlus.m_definitions.front()))
         {
-          lPlusLength = (float)(std::get<1>(lPlus.m_definitions.front()) - lPlus.m_t0);
+          lPlusLength = (float)(std::get<0>(lPlus.m_definitions.front()) - lPlus.m_t0);
         }
         else
         {
-          lPlusLength = (float)(std::get<2>(lPlus.m_definitions.front()) - lPlus.m_t0);
+          lPlusLength = (float)(std::get<1>(lPlus.m_definitions.front()) - lPlus.m_t0);
         }
 
         gluedLength = lMinusLength + lPlusLength;
@@ -198,6 +198,14 @@ CPatLine CPatFamily::getDual(CPatLine& line, double periodX, double periodY)
 {
   CPatLine res;
   auto linesForPeriod = lines({ periodX, periodY });
+
+  auto lMX = line.func(line.m_t0);
+  auto lMXMod1 = CPatUtils::byMod(lMX.first, periodX);
+  auto lMXMod2 = CPatUtils::byMod(lMX.second, periodY);
+  auto lMY = line.func(line.m_t1);
+  auto lMYMod1 = CPatUtils::byMod(lMY.first, periodX);
+  auto lMYMod2 = CPatUtils::byMod(lMY.second, periodY);
+
   for (auto& l : linesForPeriod)
   {
     auto lX = l.func(l.m_t0);
@@ -206,14 +214,7 @@ CPatLine CPatFamily::getDual(CPatLine& line, double periodX, double periodY)
     auto lY = l.func(l.m_t1);
     auto lYMod1 = CPatUtils::byMod(lY.first, periodX);
     auto lYMod2 = CPatUtils::byMod(lY.second, periodY);
-
-    auto lMX = line.func(line.m_t0);
-    auto lMXMod1 = CPatUtils::byMod(lMX.first, periodX);
-    auto lMXMod2 = CPatUtils::byMod(lMX.second, periodY);
-    auto lMY = line.func(line.m_t1);
-    auto lMYMod1 = CPatUtils::byMod(lMY.first, periodX);
-    auto lMYMod2 = CPatUtils::byMod(lMY.second, periodY);
-
+    
     if (l.m_index != line.m_index &&
       abs(l.m_t1 - l.m_t0) > cDelta &&
       l.m_definitions.size() > 0 &&
@@ -270,7 +271,7 @@ std::vector<CPatLine> CPatFamily::lines(const std::vector<double>& tileSize)
 
   for (auto i = start; i <= end; i++)
   {
-    res.emplace_back(m_angle, m_origin, m_delta, m_intervals, i, std::vector<double>{ tileSize[0] + 0.001, tileSize[1] + 0.001 });
+    res.emplace_back(m_angle, m_origin, m_delta, m_intervals, i, std::vector<double>{ tileSize[0]/* + 0.01*/, tileSize[1]/* + 0.01*/ });
   }
   
   return res;
@@ -278,7 +279,7 @@ std::vector<CPatLine> CPatFamily::lines(const std::vector<double>& tileSize)
 
 std::vector<std::tuple<int, Point, Point>> CPatFamily::generateSegments(const std::vector<double>& tileSize)
 {
-  std::vector<CPatLine> patLines = lines(std::vector<double>{ tileSize[0] - 0.001, tileSize[1] - 0.001 });
+  std::vector<CPatLine> patLines = lines(std::vector<double>{ tileSize[0], tileSize[1] });
 
   return CTileLineAligner().getAligned(patLines, tileSize[0], tileSize[1]);
 }

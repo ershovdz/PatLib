@@ -24,7 +24,7 @@ public:
   std::pair<double, double> m_delta;
   std::vector<double> m_intervals;
   int m_index;
-  std::vector<std::tuple<int, double, double> > m_definitions;
+  std::vector<std::tuple<double, double, int> > m_definitions;
   double m_t0;
   double m_t1;
   bool m_initialized{ false };

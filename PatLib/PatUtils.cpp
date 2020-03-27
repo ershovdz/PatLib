@@ -230,9 +230,9 @@ void CTileLineAligner::addAlignedLineSegments(const CPatLine& line, double tileW
 {
   for (auto& definition : line.m_definitions)
   {
-    auto intervalIndex = std::get<0>(definition);
-    auto start = line.func(std::get<1>(definition));
-    auto end = line.func(std::get<2>(definition));
+    auto start = line.func(std::get<0>(definition));
+    auto end = line.func(std::get<1>(definition));
+    auto intervalIndex = std::get<2>(definition);
 
     double xOffset = 0;
     double yOffset = 0;
@@ -351,9 +351,9 @@ double CPatUtils::byMod(double x, double mod)
   double res = x;
   if (x >= mod || abs(x - mod) <= 0.001f)
   {
-    //auto roundedX = std::round(x * 1000.0) / 1000.0;
-    //auto roundedMod = std::round(mod * 1000.0) / 1000.0;
-    res = (x / mod) - std::ceil(x / mod);
+    auto roundedX = std::round(x * 10000.0) / 10000.0;
+    auto roundedMod = std::round(mod * 10000.0) / 10000.0;
+    res = (roundedX / roundedMod) - std::ceil(roundedX / roundedMod);
   }
 
   return res;

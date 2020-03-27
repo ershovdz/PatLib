@@ -579,6 +579,7 @@ HRESULT DemoApp::CreateGridPatternBrush(
 
       for (auto& f : families)
       {
+        //auto f = families[1];
         auto alignedFamilySegments = f.generateSegments(MaxRectE);
         std::unordered_set<int> invalidSegmentIndices;
 
