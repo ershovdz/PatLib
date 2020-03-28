@@ -123,14 +123,15 @@ void CPatLine::init(const std::vector<double>& maxLength)
       for (int intervalIndex = (int)m_intervals.size() - 1; intervalIndex >= 0; --intervalIndex)
       {
         auto interval = m_intervals[intervalIndex];
-        if (interval >= 0 && (originLeft - interval) <= m_t1)
+
+        if (interval >= 0 && (abs(m_t1 - originLeft + interval) < cEpsilon || (m_t1 - originLeft + interval) > cEpsilon))
         {
           auto point1 = originLeft;
           auto point2 = originLeft - interval;// std::max(originLeft - interval, m_t0);
           m_definitions.push_back(std::make_tuple(std::min(point1, point2), std::max(point1, point2), intervalIndex));
         }
         originLeft -= abs(interval);
-        if (originLeft < m_t0)
+        if (originLeft < m_t0 - 2.*cEpsilon)
         {
           break;
         }

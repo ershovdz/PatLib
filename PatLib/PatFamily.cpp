@@ -126,6 +126,9 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
 
   auto linesForPeriod = lines({ periodX, periodY });
 
+
+  //bool hasGeometry = false;
+  
   CPatLine lPlus, lMinus;
   for (auto& line : linesForPeriod)
   {
@@ -135,6 +138,8 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
       abs(line.m_t1 - line.m_t0) > cDelta &&
       line.m_definitions.size() > 0)
     {
+      //hasGeometry = true;
+
       auto dual = getDual(line, periodX, periodY);
       if (dual.m_initialized)
       {
@@ -144,6 +149,9 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
       }
     }
   }
+
+  //if (!hasGeometry)
+  //  return true;
 
   if (!lMinus.m_initialized || !lPlus.m_initialized)
   {
@@ -228,6 +236,17 @@ CPatLine CPatFamily::getDual(CPatLine& line, double periodX, double periodY)
   return res;
 }
 
+namespace
+{
+  int roundIndex(double num)
+  {
+    if (num >= 0)
+      return  (int)std::ceil(num);
+    else
+      return (int)std::round(num);
+  }
+}
+
 std::vector<CPatLine> CPatFamily::lines(const std::vector<double>& tileSize)
 {
   std::vector<CPatLine> res;
@@ -236,8 +255,8 @@ std::vector<CPatLine> CPatFamily::lines(const std::vector<double>& tileSize)
   int indexMin = 0, indexMax = 0;
   if (abs(cos(angleRad)) < cEpsilon) // cos is 0
   {
-    indexMin = (int)std::ceil(m_origin.first / (m_delta.second*sin(angleRad)));
-    indexMax = (int)std::ceil((m_origin.first - tileSize[0]) / (m_delta.second*sin(angleRad)));
+    indexMin = roundIndex(std::ceil(m_origin.first / (m_delta.second*sin(angleRad))));
+    indexMax = roundIndex(m_origin.first - tileSize[0]) / (m_delta.second*sin(angleRad));
   }
   else if (abs(sin(angleRad)) < cEpsilon) // sin is 0
   {

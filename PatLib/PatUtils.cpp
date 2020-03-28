@@ -243,15 +243,95 @@ void CTileLineAligner::addAlignedLineSegments(const CPatLine& line, double tileW
 
       end.first += xOffset;
       end.second += yOffset;
+            
+      /*start.first = std::round(start.first * 10000.0) / 10000.0;
+      start.second = std::round(start.second * 10000.0) / 10000.0;
+      
+      end.first = std::round(end.first * 10000.0) / 10000.0;
+      end.second = std::round(end.second * 10000.0) / 10000.0;*/
 
       alignedSegments.push_back(std::make_tuple(intervalIndex, Point{ start.first, start.second }, Point{ end.first, end.second }));
     }
     else
     {
+      /*start.first = std::round(start.first * 10000.0) / 10000.0;
+      start.second = std::round(start.second * 10000.0) / 10000.0;
+
+      end.first = std::round(end.first * 10000.0) / 10000.0;
+      end.second = std::round(end.second * 10000.0) / 10000.0;*/
+
       alignedSegments.push_back(std::make_tuple(intervalIndex, Point{ start.first, start.second }, Point{ end.first, end.second }));
     }
   }
 }
+
+//bool CTileLineAligner::getAlignVectorIfTargetLineExist(const Point& start, const Point& end, int intervalIndex, double tileWidth, double tileHeight, double& xOffset, double& yOffset)
+//{
+//  xOffset = 0;
+//  yOffset = 0;
+//
+//  for (auto& existedSegment : alignData)
+//  {
+//    bool lineAlreadyExist = false;
+//
+//    auto existedIntervalIndex = std::get<0>(existedSegment);
+//    auto existedLineStartPoint = std::get<1>(existedSegment);
+//
+//    if (intervalIndex == existedIntervalIndex)
+//    {
+//      auto distanceX = abs(existedLineStartPoint.x - start.x);
+//      auto distanceY = abs(existedLineStartPoint.y - start.y);
+//            
+//      if (abs(tileWidth - distanceX) < alignEps && distanceY < alignEps)
+//      {
+//        lineAlreadyExist = true;
+//        if (existedLineStartPoint.x > start.x)
+//          xOffset = existedLineStartPoint.x - tileWidth - start.x;
+//        else
+//          xOffset = existedLineStartPoint.x + tileWidth - start.x;
+//
+//        yOffset = existedLineStartPoint.y - start.y;
+//      }
+//
+//      /*else if (distanceX < alignEps)
+//      {
+//        lineAlreadyExist = true;
+//        xOffset = existedLineStartPoint.x - start.x;
+//      }*/
+//
+//      if (abs(tileHeight - distanceY) < alignEps && distanceX < alignEps)
+//      {
+//        lineAlreadyExist = true;
+//        if (existedLineStartPoint.y > start.y)
+//          yOffset = existedLineStartPoint.y - tileHeight - start.y;// -abs(tileHeight - distanceY);
+//        else
+//          yOffset = existedLineStartPoint.y + tileHeight - start.y;// abs(tileHeight - distanceY);
+//
+//        xOffset = existedLineStartPoint.x - start.x;
+//      }
+//      /*else if (distanceY < alignEps)
+//      {
+//        lineAlreadyExist = true;
+//        yOffset = existedLineStartPoint.y - start.y;
+//      }*/
+//    }
+//
+//    if (lineAlreadyExist)
+//      return true;
+//  }
+//
+//
+//  Point firstIntersectPoint, secondIntersectPoint;
+//  bool intersectSide = intersect(start, end, Point{ 0,0 }, Point{ 0,tileHeight }, firstIntersectPoint, secondIntersectPoint) ||
+//    intersect(start, end, Point{ tileWidth, 0 }, Point{ tileWidth ,tileHeight }, firstIntersectPoint, secondIntersectPoint) ||
+//    intersect(start, end, Point{ 0,0 }, Point{ tileWidth,0 }, firstIntersectPoint, secondIntersectPoint) ||
+//    intersect(start, end, Point{ 0, tileHeight }, Point{ tileWidth ,tileHeight }, firstIntersectPoint, secondIntersectPoint);
+//  
+//  if(intersectSide)
+//    alignData.push_back(std::make_tuple(intervalIndex, Point{ start.x, start.y }, Point{ end.x, end.y }));
+//
+//  return false;
+//}
 
 bool CTileLineAligner::getAlignVectorIfTargetLineExist(const Point& start, const Point& end, int intervalIndex, double tileWidth, double tileHeight, double& xOffset, double& yOffset)
 {
@@ -303,7 +383,15 @@ bool CTileLineAligner::getAlignVectorIfTargetLineExist(const Point& start, const
       return true;
   }
 
-  alignData.push_back(std::make_tuple(intervalIndex, Point{ start.x, start.y }, Point{ end.x, end.y }));
+  Point firstIntersectPoint, secondIntersectPoint;
+  bool intersectSide = intersect(start, end, Point{ 0,0 }, Point{ 0,tileHeight }, firstIntersectPoint, secondIntersectPoint) ||
+    intersect(start, end, Point{ tileWidth, 0 }, Point{ tileWidth ,tileHeight }, firstIntersectPoint, secondIntersectPoint) ||
+    intersect(start, end, Point{ 0,0 }, Point{ tileWidth,0 }, firstIntersectPoint, secondIntersectPoint) ||
+    intersect(start, end, Point{ 0, tileHeight }, Point{ tileWidth ,tileHeight }, firstIntersectPoint, secondIntersectPoint);
+
+  if (intersectSide)
+    alignData.push_back(std::make_tuple(intervalIndex, Point{ start.x, start.y }, Point{ end.x, end.y }));
+
   return false;
 }
 

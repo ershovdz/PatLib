@@ -396,6 +396,8 @@ HRESULT DemoApp::CreateGridPatternBrush(
         std::unordered_set<int> invalidSegmentIndices;
 
         bool isOk = CTileChecker::checkFamilySegments(alignedFamilySegments, MaxRectE[0], MaxRectE[1], invalidSegmentIndices);
+        /*if (isOk)
+          continue;*/
 
         for (int i = 0; i < alignedFamilySegments.size(); ++i)
         {
@@ -413,6 +415,8 @@ HRESULT DemoApp::CreateGridPatternBrush(
             (float)l/*,
             pStrokeStyle*/);
         }
+
+        //break;
       }
 
       pCompatibleRenderTarget->EndDraw();
