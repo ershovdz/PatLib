@@ -165,7 +165,7 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
       if (intervalsMinus[0] == intervalsPlus[0])
       {
         auto lMinusLength = 0.f;
-        if ((lMinus.m_t1 - std::get<1>(lMinus.m_definitions.back())) > 0.055)
+        if ((lMinus.m_t1 - std::get<1>(lMinus.m_definitions.back())) > lMinus.lineEps())
         {
           lMinusLength = (float)(lMinus.m_t1 - std::get<1>(lMinus.m_definitions.back()));
         }
@@ -271,7 +271,7 @@ std::vector<CPatLine> CPatFamily::lines(const std::vector<double>& tileSize)
 
   for (auto i = start; i <= end; i++)
   {
-    res.emplace_back(m_angle, m_origin, m_delta, m_intervals, i, std::vector<double>{ tileSize[0]/* + 0.01*/, tileSize[1]/* + 0.01*/ });
+    res.emplace_back(m_angle, m_origin, m_delta, m_intervals, i, std::vector<double>{ tileSize[0] /*+ 0.01*/, tileSize[1] /*+ 0.01*/ });
   }
   
   return res;

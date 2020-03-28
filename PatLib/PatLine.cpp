@@ -15,13 +15,32 @@ CPatLine::CPatLine(double angle, const std::pair<double, double>& origin, const 
   m_origin(origin),
   m_delta(delta),
   m_intervals(intervals),
-  m_index(index)
+  m_index(index),
+  m_lineEps(std::numeric_limits<double>::max())
 {
   init(maxLength);
 }
 
+void CPatLine::initLineEps()
+{
+  for (auto& interval : m_intervals)
+  {
+    if (abs(interval) > cEpsilon)
+      m_lineEps = std::min(m_lineEps, abs(interval));
+  }
+
+  if (abs(m_delta.first) > cEpsilon)
+    m_lineEps = std::min(m_lineEps, std::abs(m_delta.first));
+  if (abs(m_delta.second) > cEpsilon)
+    m_lineEps = std::min(m_lineEps, std::abs(m_delta.second));
+
+  m_lineEps /= 10.;  
+}
+
 void CPatLine::init(const std::vector<double>& maxLength)
 {
+  initLineEps();
+
   const double pi = std::acos(-1);
   auto angleRad = ((double)m_angle*pi) / 180.;
   double t0Y = 0, t0X = 0, t1Y = 0, t1X = 0;
@@ -180,7 +199,7 @@ std::vector<int> CPatLine::getIntervalNumbers(double arg)
     for (int i = 0; i < m_intervals.size(); i++)
     {
       currentPoint += abs(m_intervals[i]);
-      if (arg < currentPoint || abs(arg - currentPoint) < 0.055f)
+      if (arg < currentPoint || abs(arg - currentPoint) < m_lineEps)
       {
         res.push_back(i);
         break;

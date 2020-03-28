@@ -239,6 +239,8 @@ TEST(TileSizeTest, GRAVEL)
 
     std::unordered_set<int> invalidSegmentIndices;
     EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+    if (!invalidSegmentIndices.empty())
+      return;
   }
 }
 

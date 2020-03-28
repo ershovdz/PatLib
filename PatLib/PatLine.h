@@ -15,8 +15,11 @@ public:
   double funcMinusOneY(double y) const;
 
   double length();
-  std::vector<int> CPatLine::getIntervalNumbers(double arg);
+  double lineEps() { return m_lineEps; }
+  std::vector<int> getIntervalNumbers(double arg);
+
 private:
+  void initLineEps();
   void init(const std::vector<double>& maxLength);
 public:
   double m_angle;
@@ -27,5 +30,6 @@ public:
   std::vector<std::tuple<double, double, int> > m_definitions;
   double m_t0;
   double m_t1;
+  double m_lineEps;
   bool m_initialized{ false };
 };
