@@ -118,7 +118,7 @@ void CPatLine::init(const std::vector<double>& maxLength)
       }
     }
 
-    while (originLeft >= m_t0)
+    while (originLeft >= m_t0 - 2.*cEpsilon)
     {
       for (int intervalIndex = (int)m_intervals.size() - 1; intervalIndex >= 0; --intervalIndex)
       {

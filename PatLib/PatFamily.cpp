@@ -183,7 +183,7 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
         }
 
         auto lPlusLength = 0.f;
-        if (lPlus.m_t0 < std::get<1>(lPlus.m_definitions.front()))
+        if (lPlus.m_t0 < std::get<0>(lPlus.m_definitions.front()))
         {
           lPlusLength = (float)(std::get<0>(lPlus.m_definitions.front()) - lPlus.m_t0);
         }
@@ -255,23 +255,13 @@ std::vector<CPatLine> CPatFamily::lines(const std::vector<double>& tileSize)
   int indexMin = 0, indexMax = 0;
   if (abs(cos(angleRad)) < cEpsilon) // cos is 0
   {
-    indexMin = roundIndex(std::ceil(m_origin.first / (m_delta.second*sin(angleRad))));
+    indexMin = roundIndex(m_origin.first / (m_delta.second*sin(angleRad)));
     indexMax = roundIndex(m_origin.first - tileSize[0]) / (m_delta.second*sin(angleRad));
   }
   else if (abs(sin(angleRad)) < cEpsilon) // sin is 0
   {
-    auto us1 = (int)std::ceil(-m_origin.second / (m_delta.second*cos(angleRad)));
-    auto us2 = (int)std::ceil((tileSize[1] - m_origin.second) / (m_delta.second*cos(angleRad)));
-    indexMin = std::min(us1, us2);
-    indexMax = std::max(us1, us2);
-    if (m_origin.second + m_delta.second*cos(angleRad)*indexMin < 0)
-    {
-      indexMin++;
-    }
-    if (m_origin.second + m_delta.second*cos(angleRad)*indexMax > tileSize[1])
-    {
-      indexMax--;
-    }
+    indexMin = roundIndex(-m_origin.second / (m_delta.second*cos(angleRad)));
+    indexMax = roundIndex((tileSize[1] - m_origin.second) / (m_delta.second*cos(angleRad)));
   }
   else if (cos(angleRad)*sin(angleRad) > 0)
   {
