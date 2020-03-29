@@ -142,25 +142,25 @@ TEST(TileSizeTest, RENGA_TRILINE)
   }
 }
 
-//TEST(TileSizeTest, RENGA_DOTS)
-//{
-//  std::wstring path(L"../data/renga_dots.pat");
-//  auto patterns = CPatFileParser::loadPatterns(path);
-//
-//  EXPECT_TRUE(patterns.size() == 1);
-//
-//  auto&& pattern = patterns[0];
-//  auto families = pattern.families();
-//  auto tileSize = pattern.length();
-//
-//  for (auto& f : families)
-//  {
-//    auto tileSgments = f.generateSegments(tileSize);
-//
-//    std::unordered_set<int> invalidSegmentIndices;
-//    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
-//  }
-//}
+TEST(TileSizeTest, RENGA_DOTS)
+{
+  std::wstring path(L"../data/renga_dots.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}
 
 TEST(TileSizeTest, ANSI31)
 {

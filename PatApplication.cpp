@@ -304,7 +304,7 @@ HRESULT DemoApp::CreateDeviceResources()
         &pGradientStops
       );
     }
-    std::wstring path(L"ansi36.pat");
+    std::wstring path(L"../data/renga_dots.pat");
     m_patterns = CPatFileParser::loadPatterns(path);
 
     if (SUCCEEDED(hr))
