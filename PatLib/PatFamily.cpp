@@ -261,23 +261,55 @@ std::vector<CPatLine> CPatFamily::lines(const std::vector<double>& tileSize)
   int indexMin = 0, indexMax = 0;
   if (abs(cos(angleRad)) < cEpsilon) // cos is 0
   {
-    indexMin = roundIndex(m_origin.first / (m_delta.second*sin(angleRad)));
-    indexMax = roundIndex(m_origin.first - tileSize[0]) / (m_delta.second*sin(angleRad));
+    if (abs(m_delta.second) < cEpsilon)
+    {
+      indexMin = 0;
+      indexMax = 0;
+    }
+    else
+    {
+      indexMin = roundIndex(m_origin.first / (m_delta.second*sin(angleRad)));
+      indexMax = roundIndex(m_origin.first - tileSize[0]) / (m_delta.second*sin(angleRad));
+    }
   }
   else if (abs(sin(angleRad)) < cEpsilon) // sin is 0
   {
-    indexMin = roundIndex(-m_origin.second / (m_delta.second*cos(angleRad)));
-    indexMax = roundIndex((tileSize[1] - m_origin.second) / (m_delta.second*cos(angleRad)));
+    if (abs(m_delta.second) < cEpsilon)
+    {
+      indexMin = 0;
+      indexMax = 0;
+    }
+    else
+    {
+      indexMin = roundIndex(-m_origin.second / (m_delta.second*cos(angleRad)));
+      indexMax = roundIndex((tileSize[1] - m_origin.second) / (m_delta.second*cos(angleRad)));
+    }
   }
   else if (cos(angleRad)*sin(angleRad) > 0)
   {
-    indexMin = (int)std::round(((m_origin.first - tileSize[0])*sin(angleRad) - cos(angleRad)*m_origin.second) / m_delta.second);
-    indexMax = (int)std::round(((tileSize[1] - m_origin.second)*cos(angleRad) + sin(angleRad)*m_origin.first) / m_delta.second);
+    if (abs(m_delta.second) < cEpsilon)
+    {
+      indexMin = 0;
+      indexMax = 0;
+    }
+    else
+    {
+      indexMin = (int)std::round(((m_origin.first - tileSize[0])*sin(angleRad) - cos(angleRad)*m_origin.second) / m_delta.second);
+      indexMax = (int)std::round(((tileSize[1] - m_origin.second)*cos(angleRad) + sin(angleRad)*m_origin.first) / m_delta.second);
+    }
   }
   else if (cos(angleRad)*sin(angleRad) < 0)
   {
-    indexMin = (int)std::round((m_origin.first*sin(angleRad) - m_origin.second*cos(angleRad)) / m_delta.second);
-    indexMax = (int)std::round(((tileSize[1] - m_origin.second)*cos(angleRad) - (tileSize[0] - m_origin.first)*sin(angleRad)) / m_delta.second);
+    if (abs(m_delta.second) < cEpsilon)
+    {
+      indexMin = 0;
+      indexMax = 0;
+    }
+    else
+    {
+      indexMin = (int)std::round((m_origin.first*sin(angleRad) - m_origin.second*cos(angleRad)) / m_delta.second);
+      indexMax = (int)std::round(((tileSize[1] - m_origin.second)*cos(angleRad) - (tileSize[0] - m_origin.first)*sin(angleRad)) / m_delta.second);
+    }
   }
 
   // generate family line instances

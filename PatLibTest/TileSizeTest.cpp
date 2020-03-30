@@ -406,3 +406,224 @@ TEST(TileSizeTest, CROSS)
     EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
   }
 }
+
+TEST(TileSizeTest, ARB816)
+{
+  std::wstring path(L"../data/arb816.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}
+
+TEST(TileSizeTest, ARB816C)
+{
+  std::wstring path(L"../data/arb816c.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  EXPECT_TRUE(!families.empty());
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}
+
+TEST(TileSizeTest, ARB88)
+{
+  std::wstring path(L"../data/arb88.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  EXPECT_TRUE(!families.empty());
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}
+
+TEST(TileSizeTest, ARBRELM)
+{
+  std::wstring path(L"../data/arbrelm.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  EXPECT_TRUE(!families.empty());
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}
+
+TEST(TileSizeTest, ARBRSTD)
+{
+  std::wstring path(L"../data/arbrstd.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  EXPECT_TRUE(!families.empty());
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}
+
+
+TEST(TileSizeTest, ARHBONE)
+{
+  std::wstring path(L"../data/arhbone.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  EXPECT_TRUE(!families.empty());
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}
+
+
+TEST(TileSizeTest, ARPARQ1)
+{
+  std::wstring path(L"../data/arparq1.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  EXPECT_TRUE(!families.empty());
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}
+
+TEST(TileSizeTest, ARROOF)
+{
+  std::wstring path(L"../data/arroof.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  EXPECT_TRUE(!families.empty());
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}
+
+TEST(TileSizeTest, ARSHKE)
+{
+  std::wstring path(L"../data/arshke.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  EXPECT_TRUE(!families.empty());
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}
+
+
+TEST(TileSizeTest, BOX)
+{
+  std::wstring path(L"../data/box.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  EXPECT_TRUE(!families.empty());
+
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    std::unordered_set<int> invalidSegmentIndices;
+    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+  }
+}

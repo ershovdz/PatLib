@@ -304,7 +304,7 @@ HRESULT DemoApp::CreateDeviceResources()
         &pGradientStops
       );
     }
-    std::wstring path(L"../data/renga_dots.pat");
+    std::wstring path(L"../data/ARROOF.pat");
     m_patterns = CPatFileParser::loadPatterns(path);
 
     if (SUCCEEDED(hr))
@@ -386,7 +386,7 @@ HRESULT DemoApp::CreateGridPatternBrush(
       auto families = pattern.families();
       double pointAddition = 0;
       index++;
-      double l = 2.f;
+      double l = 4.f;
 
 
       for (auto& f : families)
