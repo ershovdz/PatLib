@@ -386,7 +386,7 @@ HRESULT DemoApp::CreateGridPatternBrush(
       auto families = pattern.families();
       double pointAddition = 0;
       index++;
-      double l = 4.f;
+      double l = 2.f;
 
 
       for (auto& f : families)

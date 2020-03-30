@@ -203,9 +203,10 @@ std::vector<std::tuple<int, Point, Point>> CTileLineAligner::getAligned(const st
   if (lines.empty())
     return result;
 
-  alignEps = std::min(lines[0].m_delta.first / 18., lines[0].m_delta.second / 18.);
+  
+  alignEps = std::min(lines[0].m_delta.first / 12., lines[0].m_delta.second / 12.);
   if (alignEps < 0.00001)
-    alignEps = std::max(lines[0].m_delta.first / 18., lines[0].m_delta.second / 18.);
+    alignEps = std::max(lines[0].m_delta.first / 12., lines[0].m_delta.second / 12.);
 
   for (auto& line : lines)
   {

@@ -165,6 +165,12 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
 
     if (intervalsMinus.size() == intervalsPlus.size() && intervalsMinus.size() > 1)
     {
+      for (int i = 0; i < intervalsMinus.size(); ++i)
+      {
+        if (intervalsMinus[i] != intervalsPlus[i])
+          return true;
+      }
+      
       res = false;
     }
     else

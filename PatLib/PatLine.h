@@ -15,9 +15,9 @@ public:
   double funcMinusOneY(double y) const;
 
   double length();
-  double lineEps() { return m_lineEps; }
+  double lineEps() const { return m_lineEps; }
   std::vector<int> getIntervalNumbers(double arg);
-
+  
 private:
   void initLineEps();
   void init(const std::vector<double>& maxLength);

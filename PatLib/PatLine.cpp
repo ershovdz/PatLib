@@ -7,7 +7,7 @@
 
 namespace
 {
-  static double cEpsilon = 0.0001;
+  static double cEpsilon = 0.007;
 }
 
 CPatLine::CPatLine(double angle, const std::pair<double, double>& origin, const std::pair<double, double>& delta, const std::vector<double>& intervals, int index, const std::vector<double>& maxLength) :
@@ -178,6 +178,65 @@ double CPatLine::length()
   return res;
 }
 
+//std::vector<int> CPatLine::getIntervalNumbers(double arg)
+//{
+//  std::vector<int> res;
+//  auto fragmentLen = 0.;
+//  for (auto& interval : m_intervals)
+//  {
+//    fragmentLen += abs(interval);
+//  }
+//
+//  int fragNum = (int)(abs(arg) / fragmentLen);
+//  auto startPoint = fragNum*fragmentLen;
+//  if (arg >= 0)
+//  {
+//    auto currentPoint = startPoint;
+//    if (abs(arg - currentPoint) < 0.001f)
+//    {
+//      res.push_back(0);
+//      res.push_back((int)m_intervals.size() - 1);
+//    }
+//    for (int i = 0; i < m_intervals.size(); i++)
+//    {
+//      currentPoint += abs(m_intervals[i]);
+//      if (arg < currentPoint || abs(arg - currentPoint) < m_lineEps)
+//      {
+//        res.push_back(i);
+//        break;
+//      }
+//    }
+//
+//    if (abs(arg - currentPoint) < 0.001f)
+//    {
+//      res.push_back(0);
+//    }
+//  }
+//  else
+//  {
+//    auto currentPoint = -startPoint;
+//    if (abs(arg - currentPoint) < 0.001f)
+//    {
+//      res.push_back(0);
+//    }
+//    for (int i = (int)m_intervals.size() - 1; i >= 0; i--)
+//    {
+//      currentPoint -= abs(m_intervals[i]);
+//      if (arg > currentPoint)
+//      {
+//        res.push_back(i);
+//        break;
+//      }
+//    }
+//    if (abs(arg - currentPoint) < 0.001f)
+//    {
+//      res.push_back(1);
+//    }
+//  }
+//
+//  return res;
+//}
+
 std::vector<int> CPatLine::getIntervalNumbers(double arg)
 {
   std::vector<int> res;
@@ -192,45 +251,76 @@ std::vector<int> CPatLine::getIntervalNumbers(double arg)
   if (arg >= 0)
   {
     auto currentPoint = startPoint;
-    if (abs(arg - currentPoint) < 0.001f)
+    if (abs(arg - currentPoint) < m_lineEps) // between two intervals
     {
+      if (m_intervals.size() > 1)
+        res.push_back((int)m_intervals.size() - 1);
+
       res.push_back(0);
-      res.push_back((int)m_intervals.size() - 1);
+      
+      return res;
     }
+
     for (int i = 0; i < m_intervals.size(); i++)
     {
       currentPoint += abs(m_intervals[i]);
-      if (arg < currentPoint || abs(arg - currentPoint) < m_lineEps)
+      if (arg + m_lineEps < currentPoint) // in the middle of interval
       {
         res.push_back(i);
-        break;
+        return res;
       }
-    }
-
-    if (abs(arg - currentPoint) < 0.001f)
-    {
-      res.push_back(0);
-    }
+      
+      else if(abs(arg - currentPoint) < m_lineEps) // between two intervals
+      {
+        res.push_back(i);
+        if (i + 1 < m_intervals.size())
+        {
+          res.push_back(i + 1);
+        }          
+        else if(m_intervals.size() > 1)
+        {
+          res.push_back(0);
+        }
+        return res;
+      }
+    }    
   }
   else
   {
     auto currentPoint = -startPoint;
-    if (abs(arg - currentPoint) < 0.001f)
+    if (abs(arg - currentPoint) < m_lineEps) // between two intervals
     {
+      if (m_intervals.size() > 1)
+        res.push_back((int)m_intervals.size() - 1);
+
       res.push_back(0);
+
+      return res;
     }
+
     for (int i = (int)m_intervals.size() - 1; i >= 0; i--)
     {
       currentPoint -= abs(m_intervals[i]);
-      if (arg > currentPoint)
+      if (arg - m_lineEps > currentPoint) // in the middle of interval
       {
         res.push_back(i);
-        break;
+        return res;
       }
-    }
-    if (abs(arg - currentPoint) < 0.001f)
-    {
-      res.push_back(1);
+
+      else if (abs(arg - currentPoint) < m_lineEps) // between two intervals
+      {
+        
+        if (i > 0)
+        {
+          res.push_back(i - 1);
+          res.push_back(i);
+        }
+        else if (m_intervals.size() > 1)
+        {
+          res.push_back(m_intervals.size() - 1);
+        }
+        return res;
+      }
     }
   }
 

@@ -153,13 +153,16 @@ TEST(TileSizeTest, RENGA_DOTS)
   auto families = pattern.families();
   auto tileSize = pattern.length();
 
+  std::unordered_set<int> invalidSegmentIndices;
+
   for (auto& f : families)
   {
     auto tileSgments = f.generateSegments(tileSize);
 
-    std::unordered_set<int> invalidSegmentIndices;
-    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+    CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
+
+  EXPECT_TRUE(invalidSegmentIndices.size() == 3);
 }
 
 TEST(TileSizeTest, ANSI31)
