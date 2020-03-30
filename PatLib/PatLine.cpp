@@ -257,8 +257,6 @@ std::vector<int> CPatLine::getIntervalNumbers(double arg)
         res.push_back((int)m_intervals.size() - 1);
 
       res.push_back(0);
-      
-      return res;
     }
 
     for (int i = 0; i < m_intervals.size(); i++)
@@ -266,8 +264,10 @@ std::vector<int> CPatLine::getIntervalNumbers(double arg)
       currentPoint += abs(m_intervals[i]);
       if (arg + m_lineEps < currentPoint) // in the middle of interval
       {
-        res.push_back(i);
-        return res;
+        if (std::find(res.begin(), res.end(), i) == res.end()) {
+          res.push_back(i);
+          break;
+        }
       }
       
       else if(abs(arg - currentPoint) < m_lineEps) // between two intervals
@@ -281,45 +281,38 @@ std::vector<int> CPatLine::getIntervalNumbers(double arg)
         {
           res.push_back(0);
         }
-        return res;
       }
     }    
   }
   else
   {
-    auto currentPoint = -startPoint;
-    if (abs(arg - currentPoint) < m_lineEps) // between two intervals
+    auto currentPoint = -startPoint - 2*fragmentLen;
+    while (arg > currentPoint)
     {
-      if (m_intervals.size() > 1)
-        res.push_back((int)m_intervals.size() - 1);
-
-      res.push_back(0);
-
-      return res;
-    }
-
-    for (int i = (int)m_intervals.size() - 1; i >= 0; i--)
-    {
-      currentPoint -= abs(m_intervals[i]);
-      if (arg - m_lineEps > currentPoint) // in the middle of interval
+      for (int i = 0; i < (int)m_intervals.size(); i++)
       {
-        res.push_back(i);
-        return res;
-      }
-
-      else if (abs(arg - currentPoint) < m_lineEps) // between two intervals
-      {
-        
-        if (i > 0)
+        currentPoint += abs(m_intervals[i]);
+        if (arg + m_lineEps < currentPoint) // in the middle of interval
         {
-          res.push_back(i - 1);
+          if (std::find(res.begin(), res.end(), i) == res.end()) {
+            res.push_back(i);
+            break;
+          }
+        }
+
+        else if (abs(arg - currentPoint) < m_lineEps) // between two intervals
+        {
           res.push_back(i);
+          if (i + 1 < m_intervals.size())
+          {
+            res.push_back(i + 1);
+          }
+          else if (m_intervals.size() > 1)
+          {
+            res.push_back(0);
+          }
+          break;
         }
-        else if (m_intervals.size() > 1)
-        {
-          res.push_back(m_intervals.size() - 1);
-        }
-        return res;
       }
     }
   }

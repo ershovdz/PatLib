@@ -269,7 +269,7 @@ std::vector<CPatLine> CPatFamily::lines(const std::vector<double>& tileSize)
     else
     {
       indexMin = roundIndex(m_origin.first / (m_delta.second*sin(angleRad)));
-      indexMax = roundIndex(m_origin.first - tileSize[0]) / (m_delta.second*sin(angleRad));
+      indexMax = roundIndex((m_origin.first - tileSize[0]) / (m_delta.second*sin(angleRad)));
     }
   }
   else if (abs(sin(angleRad)) < cEpsilon) // sin is 0
