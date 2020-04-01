@@ -36,6 +36,7 @@ public:
   std::vector<std::tuple<int, Point, Point>> getAligned(const std::vector<CPatLine>& lines, double tileWidth, double tileHeight);
 
 private:
+  std::vector<std::tuple<int, Point, Point>> getAligned(const std::vector<CPatLine>& lines, double tileWidth, double tileHeight, double eps);
   void addAlignedLineSegments(const CPatLine& line, double tileWidth, double tileHeight, std::vector<std::tuple<int, Point, Point>>& alignedSegments);
   bool getAlignVectorIfTargetLineExist(const Point& start, const Point& end, int intervalIndex, double tileWidth, double tileHeight, double& xOffset, double& yOffset);
 

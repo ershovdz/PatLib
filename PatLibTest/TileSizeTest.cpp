@@ -162,7 +162,7 @@ TEST(TileSizeTest, RENGA_DOTS)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  EXPECT_TRUE(invalidSegmentIndices.size() == 3);
+  EXPECT_TRUE(invalidSegmentIndices.size() == 2);
 }
 
 TEST(TileSizeTest, ANSI31)

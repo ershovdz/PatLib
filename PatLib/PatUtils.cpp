@@ -6,7 +6,7 @@
 namespace
 {
   static double cEpsilon = 0.0001;
-  static double cDelta = 0.015;
+  static double cDelta = 0.05;
 
   struct Line
   {
@@ -122,14 +122,14 @@ bool CTileChecker::checkSegmentsForOppositeSides(const std::vector<std::tuple<in
 {
   if (firstSideSegments.size() != secondSideSegments.size())
   {
-    for(auto& segment : firstSideSegments)
+    for (auto& segment : firstSideSegments)
       invalidSegmentIndices.insert(std::get<5>(segment));
 
     for (auto& segment : secondSideSegments)
       invalidSegmentIndices.insert(std::get<5>(segment));
 
     return false;
-  }    
+  }
 
   bool isOk = true;
 
@@ -189,24 +189,17 @@ bool CTileChecker::checkSegmentsForOppositeSides(const std::vector<std::tuple<in
     {
       invalidSegmentIndices.insert(std::get<5>(segmentForFirstSide));
       isOk = false;
-    }      
+    }
   }
 
   return isOk;
 }
 
-std::vector<std::tuple<int, Point, Point>> CTileLineAligner::getAligned(const std::vector<CPatLine>& lines, double tileWidth, double tileHeight)
+std::vector<std::tuple<int, Point, Point>> CTileLineAligner::getAligned(const std::vector<CPatLine>& lines, double tileWidth, double tileHeight, double eps)
 {
   alignData.clear();
+
   std::vector<std::tuple<int, Point, Point>> result;
-
-  if (lines.empty())
-    return result;
-
-  
-  alignEps = std::min(lines[0].m_delta.first / 12., lines[0].m_delta.second / 12.);
-  if (alignEps < 0.00001)
-    alignEps = std::max(lines[0].m_delta.first / 12., lines[0].m_delta.second / 12.);
 
   for (auto& line : lines)
   {
@@ -221,6 +214,47 @@ std::vector<std::tuple<int, Point, Point>> CTileLineAligner::getAligned(const st
     if (line.m_index != 0)
     {
       addAlignedLineSegments(line, tileWidth, tileHeight, result);
+    }
+  }
+
+  return result;
+}
+
+std::vector<std::tuple<int, Point, Point>> CTileLineAligner::getAligned(const std::vector<CPatLine>& lines, double tileWidth, double tileHeight)
+{
+  alignData.clear();
+
+  std::vector<std::tuple<int, Point, Point>> result;
+
+  if (lines.empty())
+    return result;
+
+  alignEps = std::min(lines[0].m_delta.first / 12., lines[0].m_delta.second / 12.);
+  if (alignEps < 0.00001)
+    alignEps = std::max(lines[0].m_delta.first / 12., lines[0].m_delta.second / 12.);
+
+  result = getAligned(lines, tileWidth, tileHeight, alignEps);
+
+  std::unordered_set<int> invalidSegmentIndices;
+  CTileChecker::checkFamilySegments(result, tileWidth, tileHeight, invalidSegmentIndices);
+  size_t minInvalidSegments = invalidSegmentIndices.size();
+
+  if (minInvalidSegments == 0)
+    return result;
+
+  while (minInvalidSegments >= invalidSegmentIndices.size() && minInvalidSegments != 0 && alignEps < 200)
+  {
+    invalidSegmentIndices.clear();
+    alignEps *= 2.;
+
+    std::vector<std::tuple<int, Point, Point>> tmp = getAligned(lines, tileWidth, tileHeight, alignEps);
+
+    CTileChecker::checkFamilySegments(tmp, tileWidth, tileHeight, invalidSegmentIndices);
+
+    if (minInvalidSegments > invalidSegmentIndices.size())
+    {
+      minInvalidSegments = invalidSegmentIndices.size();
+      result = tmp;
     }
   }
 
@@ -244,10 +278,10 @@ void CTileLineAligner::addAlignedLineSegments(const CPatLine& line, double tileW
 
       end.first += xOffset;
       end.second += yOffset;
-            
+
       /*start.first = std::round(start.first * 10000.0) / 10000.0;
       start.second = std::round(start.second * 10000.0) / 10000.0;
-      
+
       end.first = std::round(end.first * 10000.0) / 10000.0;
       end.second = std::round(end.second * 10000.0) / 10000.0;*/
 
@@ -360,9 +394,11 @@ bool CTileLineAligner::getAlignVectorIfTargetLineExist(const Point& start, const
       {
         lineAlreadyExist = true;
         if (existedLineStartPoint.x > start.x)
-          xOffset = -abs(tileWidth - distanceX);
+          xOffset = existedLineStartPoint.x - tileWidth - start.x;
         else
-          xOffset = abs(tileWidth - distanceX);
+          xOffset = existedLineStartPoint.x + tileWidth - start.x;
+
+        
       }
 
       if (distanceY < alignEps)
@@ -374,9 +410,9 @@ bool CTileLineAligner::getAlignVectorIfTargetLineExist(const Point& start, const
       {
         lineAlreadyExist = true;
         if (existedLineStartPoint.y > start.y)
-          yOffset = -abs(tileHeight - distanceY);
+          yOffset = existedLineStartPoint.y - tileHeight - start.y;
         else
-          yOffset = abs(tileHeight - distanceY);
+          yOffset = existedLineStartPoint.y + tileHeight - start.y;
       }
     }
 
