@@ -1968,13 +1968,14 @@ TEST(TileSizeTest, SAND)
 
   EXPECT_TRUE(!families.empty());
 
+  std::unordered_set<int> invalidSegmentIndices;
   for (auto& f : families)
   {
-    auto tileSgments = f.generateSegments(tileSize);
-
-    std::unordered_set<int> invalidSegmentIndices;
-    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+    auto tileSgments = f.generateSegments(tileSize);    
+    CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
+
+  EXPECT_TRUE(invalidSegmentIndices.size() == 34);
 }
 
 TEST(TileSizeTest, Brick_Modular_Common_C)
