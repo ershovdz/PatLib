@@ -311,7 +311,7 @@ std::vector<int> CPatLine::getIntervalNumbers(double arg)
           {
             res.push_back(0);
           }
-          break;
+          //break;
         }
       }
     }

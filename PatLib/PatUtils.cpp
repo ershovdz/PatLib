@@ -6,7 +6,7 @@
 namespace
 {
   static double cEpsilon = 0.0001;
-  static double cDelta = 0.05;
+  static double cDelta = 0.015;
 
   struct Line
   {
@@ -229,9 +229,9 @@ std::vector<std::tuple<int, Point, Point>> CTileLineAligner::getAligned(const st
   if (lines.empty())
     return result;
 
-  alignEps = std::min(lines[0].m_delta.first / 12., lines[0].m_delta.second / 12.);
+  alignEps = std::min(abs(lines[0].m_delta.first / 12.), abs(lines[0].m_delta.second / 12.));
   if (alignEps < 0.00001)
-    alignEps = std::max(lines[0].m_delta.first / 12., lines[0].m_delta.second / 12.);
+    alignEps = std::max(abs(lines[0].m_delta.first / 12.), abs(lines[0].m_delta.second / 12.));
 
   result = getAligned(lines, tileWidth, tileHeight, alignEps);
 
@@ -279,22 +279,10 @@ void CTileLineAligner::addAlignedLineSegments(const CPatLine& line, double tileW
       end.first += xOffset;
       end.second += yOffset;
 
-      /*start.first = std::round(start.first * 10000.0) / 10000.0;
-      start.second = std::round(start.second * 10000.0) / 10000.0;
-
-      end.first = std::round(end.first * 10000.0) / 10000.0;
-      end.second = std::round(end.second * 10000.0) / 10000.0;*/
-
       alignedSegments.push_back(std::make_tuple(intervalIndex, Point{ start.first, start.second }, Point{ end.first, end.second }));
     }
     else
     {
-      /*start.first = std::round(start.first * 10000.0) / 10000.0;
-      start.second = std::round(start.second * 10000.0) / 10000.0;
-
-      end.first = std::round(end.first * 10000.0) / 10000.0;
-      end.second = std::round(end.second * 10000.0) / 10000.0;*/
-
       alignedSegments.push_back(std::make_tuple(intervalIndex, Point{ start.first, start.second }, Point{ end.first, end.second }));
     }
   }
