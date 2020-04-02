@@ -140,7 +140,7 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
     {
       //hasGeometry = true;
 
-      auto dual = getDual(line, periodX, periodY);
+      auto dual = getDual(line, linesForPeriod, periodX, periodY);
       if (dual.m_initialized)
       {
         lMinus = line;
@@ -208,11 +208,10 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
   return res;
 }
 
-CPatLine CPatFamily::getDual(CPatLine& line, double periodX, double periodY)
+CPatLine CPatFamily::getDual(CPatLine& line, const std::vector<CPatLine>& linesForPeriod, double periodX, double periodY)
 {
   CPatLine res;
-  auto linesForPeriod = lines({ periodX, periodY });
-
+  
   auto lMX = line.func(line.m_t0);
   auto lMXMod1 = CPatUtils::byMod(lMX.first, periodX);
   auto lMXMod2 = CPatUtils::byMod(lMX.second, periodY);
@@ -315,6 +314,8 @@ std::vector<CPatLine> CPatFamily::lines(const std::vector<double>& tileSize)
   // generate family line instances
   int start = std::min(indexMin, indexMax);
   int end = std::max(indexMin, indexMax);
+
+  res.reserve(abs(end - start));
 
   for (auto i = start; i <= end; i++)
   {

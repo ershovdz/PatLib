@@ -99,15 +99,16 @@ void CPatLine::init(const std::vector<double>& maxLength)
   else
   {
     double originLeft = 0.f, originRight = 0.f;
+
     while (originRight <= m_t1 + 2.*cEpsilon)
     {
-      for (size_t intervalIndex = 0; intervalIndex < m_intervals.size(); ++intervalIndex)
+      for (size_t intervalIndex = 0, ie = m_intervals.size(); intervalIndex < ie; ++intervalIndex)
       {
-        auto interval = m_intervals[intervalIndex];
+        auto&& interval = m_intervals[intervalIndex];
         if (interval >= 0 && (abs(originRight + interval - m_t0) < cEpsilon || (originRight + interval - m_t0) > cEpsilon))
         {
-          auto point1 = originRight;//std::max(originRight, m_t0);
-          auto point2 = originRight + interval;// std::min(originRight + interval, m_t1);
+          auto point1 = originRight;
+          auto point2 = originRight + interval;
           m_definitions.push_back(std::make_tuple(std::min(point1, point2), std::max(point1, point2), intervalIndex));
         }
         originRight += abs(interval);

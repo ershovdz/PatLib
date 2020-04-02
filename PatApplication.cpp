@@ -304,7 +304,7 @@ HRESULT DemoApp::CreateDeviceResources()
         &pGradientStops
       );
     }
-    std::wstring path(L"../data/ARROOF.pat");
+    std::wstring path(L"./data/sand.pat");
     m_patterns = CPatFileParser::loadPatterns(path);
 
     if (SUCCEEDED(hr))
@@ -349,7 +349,6 @@ HRESULT DemoApp::CreateGridPatternBrush(
 
   ID2D1BitmapRenderTarget *pCompatibleRenderTarget = NULL;
   auto pattern = m_patterns[m_patterns.size() > m_currentIndex ? m_currentIndex : 0];
-  int index = 0;
   MaxRect = pattern.length();
   std::vector<double> MaxRectE = { MaxRect[0] + m_eps, MaxRect[1] + m_eps };
   auto aspectE = MaxRectE[0] / MaxRectE[1];
@@ -385,16 +384,14 @@ HRESULT DemoApp::CreateGridPatternBrush(
       auto minH = tileHeight / MaxRectE[1];
       auto families = pattern.families();
       double pointAddition = 0;
-      index++;
-      double l = 4.f;
+      double l = 2.f;
 
-
-      for (auto& f : families)
+      std::unordered_set<int> invalidSegmentIndices;
+      for (auto index = 0; index < families.size(); ++index)
       {
-        //auto f = families[1];
+        auto&& f = families[index];
         auto alignedFamilySegments = f.generateSegments(MaxRectE);
-        std::unordered_set<int> invalidSegmentIndices;
-
+        
         bool isOk = CTileChecker::checkFamilySegments(alignedFamilySegments, MaxRectE[0], MaxRectE[1], invalidSegmentIndices);
         /*if (isOk)
           continue;*/

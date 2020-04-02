@@ -26,7 +26,7 @@ public:
   std::vector<std::tuple<int, Point, Point>> generateSegments(const std::vector<double>& tileSize);
 
   bool isOrnamentBroken(double periodX, double periodY);
-  CPatLine getDual(CPatLine& line, double periodX, double periodY);
+  CPatLine getDual(CPatLine& line, const std::vector<CPatLine>& linesForPeriod, double periodX, double periodY);
 public:
   double m_angle;
   std::pair<double, double> m_origin;
