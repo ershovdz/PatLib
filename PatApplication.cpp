@@ -381,14 +381,15 @@ HRESULT DemoApp::CreateGridPatternBrush(
       OutputDebugString(msg);
 
       auto minW = tileWidth / MaxRectE[0];
-      auto minH = tileHeight / MaxRectE[1];
+      auto minH = -tileHeight / MaxRectE[1];
       auto families = pattern.families();
       double pointAddition = 0;
-      double l = 2.f;
+      double l = 1.f;
 
       std::unordered_set<int> invalidSegmentIndices;
       for (auto index = 0; index < families.size(); ++index)
       {
+        //auto index = 0;
         auto&& f = families[index];
         auto alignedFamilySegments = f.generateSegments(MaxRectE);
         
@@ -406,8 +407,8 @@ HRESULT DemoApp::CreateGridPatternBrush(
           pointAddition = (start.distanceTo(end) <= 0.001f) ? 1.f : 0.f;
 
           pCompatibleRenderTarget->DrawLine(
-            D2D1::Point2F(static_cast<float>(minW*(start.x - m_deltaX) - pointAddition), static_cast<float>(minH*(start.y - m_deltaY) - pointAddition)),
-            D2D1::Point2F(static_cast<float>(minW*(end.x - m_deltaX) + pointAddition), static_cast<float>(minH*(end.y - m_deltaY) + pointAddition)),
+            D2D1::Point2F(static_cast<float>(minW*(start.x - m_deltaX) - pointAddition), static_cast<float>(minH*(start.y - m_deltaY) - pointAddition + tileHeight)),
+            D2D1::Point2F(static_cast<float>(minW*(end.x - m_deltaX) + pointAddition), static_cast<float>(minH*(end.y - m_deltaY) + pointAddition + tileHeight)),
             invalidSegmentIndices.count(i) == 0 ? pGridBrush : pRedGridBrush,
             (float)l/*,
             pStrokeStyle*/);

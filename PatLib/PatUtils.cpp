@@ -118,9 +118,79 @@ std::vector<std::tuple<int, Point, Point, Point, Point, int>> CTileChecker::filt
   return result;
 }
 
+namespace
+{
+  bool checkSegments(const std::vector<std::tuple<int, Point, Point, Point, Point, int>>& firstSideSegments, const std::vector<std::tuple<int, Point, Point, Point, Point, int>>& secondSideSegments, double sidesDistance, std::unordered_set<int>& invalidSegmentIndices)
+  {
+    bool isOk = true;
+
+    for (int i = 0; i < firstSideSegments.size(); ++i)
+    {
+      bool hasOppositeSegment = false;
+
+      auto&& segmentForFirstSide = firstSideSegments[i];
+      double firstSegmentLength = std::get<1>(segmentForFirstSide).distanceTo(std::get<2>(segmentForFirstSide));
+
+      for (int j = 0; j < secondSideSegments.size(); ++j)
+      {
+        auto&& segmentForSecondSide = secondSideSegments[j];
+        double secondSegmentLength = std::get<1>(segmentForSecondSide).distanceTo(std::get<2>(segmentForSecondSide));
+
+        if (std::get<0>(segmentForFirstSide) == std::get<0>(segmentForSecondSide))
+        {
+          // single-interval segments
+          if (firstSegmentLength > sidesDistance && secondSegmentLength > sidesDistance)
+          {
+            auto&& sideIntersectPointForFirstSegment = std::get<3>(segmentForFirstSide);
+            auto&& sideIntersectPointForSecondSegment = std::get<3>(segmentForSecondSide);
+
+            auto distanceBetweenIntersectPointsByX = abs(sideIntersectPointForFirstSegment.x - sideIntersectPointForSecondSegment.x);
+            auto distanceBetweenIntersectPointsByY = abs(sideIntersectPointForFirstSegment.y - sideIntersectPointForSecondSegment.y);
+
+            if (distanceBetweenIntersectPointsByX < cEpsilon || abs(distanceBetweenIntersectPointsByX - sidesDistance) < cEpsilon)
+            {
+              if (distanceBetweenIntersectPointsByY < cEpsilon || abs(distanceBetweenIntersectPointsByY - sidesDistance) < cEpsilon)
+              {
+                hasOppositeSegment = true;
+                break;
+              }
+            }
+          }
+          else
+          {
+            auto&& firstSegmentStartPoint = std::get<1>(segmentForFirstSide);
+            auto&& secondSegmentStartPoint = std::get<1>(segmentForSecondSide);
+
+            auto distanceBetweenSegmentsByX = abs(firstSegmentStartPoint.x - secondSegmentStartPoint.x);
+            auto distanceBetweenSegmentsByY = abs(firstSegmentStartPoint.y - secondSegmentStartPoint.y);
+
+            if (distanceBetweenSegmentsByX < cEpsilon || abs(distanceBetweenSegmentsByX - sidesDistance) < cEpsilon)
+            {
+              if (distanceBetweenSegmentsByY < cEpsilon || abs(distanceBetweenSegmentsByY - sidesDistance) < cEpsilon)
+              {
+                hasOppositeSegment = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      if (!hasOppositeSegment)
+      {
+        invalidSegmentIndices.insert(std::get<5>(segmentForFirstSide));
+        isOk = false;
+      }
+    }
+
+    return isOk;
+  }
+}
+
+
 bool CTileChecker::checkSegmentsForOppositeSides(const std::vector<std::tuple<int, Point, Point, Point, Point, int>>& firstSideSegments, const std::vector<std::tuple<int, Point, Point, Point, Point, int>>& secondSideSegments, double sidesDistance, std::unordered_set<int>& invalidSegmentIndices)
 {
-  if (firstSideSegments.size() != secondSideSegments.size())
+  /*if (firstSideSegments.size() != secondSideSegments.size())
   {
     for (auto& segment : firstSideSegments)
       invalidSegmentIndices.insert(std::get<5>(segment));
@@ -129,67 +199,12 @@ bool CTileChecker::checkSegmentsForOppositeSides(const std::vector<std::tuple<in
       invalidSegmentIndices.insert(std::get<5>(segment));
 
     return false;
-  }
+  }*/
 
-  bool isOk = true;
-
-  for (int i = 0; i < firstSideSegments.size(); ++i)
+  bool isOk = checkSegments(firstSideSegments, secondSideSegments, sidesDistance, invalidSegmentIndices);
+  if (firstSideSegments.size() != secondSideSegments.size())
   {
-    bool hasOppositeSegment = false;
-
-    auto&& segmentForFirstSide = firstSideSegments[i];
-    double firstSegmentLength = std::get<1>(segmentForFirstSide).distanceTo(std::get<2>(segmentForFirstSide));
-
-    for (int j = 0; j < secondSideSegments.size(); ++j)
-    {
-      auto&& segmentForSecondSide = secondSideSegments[j];
-      double secondSegmentLength = std::get<1>(segmentForSecondSide).distanceTo(std::get<2>(segmentForSecondSide));
-
-      if (std::get<0>(segmentForFirstSide) == std::get<0>(segmentForSecondSide))
-      {
-        // single-interval segments
-        if (firstSegmentLength > sidesDistance && secondSegmentLength > sidesDistance)
-        {
-          auto&& sideIntersectPointForFirstSegment = std::get<3>(segmentForFirstSide);
-          auto&& sideIntersectPointForSecondSegment = std::get<3>(segmentForSecondSide);
-
-          auto distanceBetweenIntersectPointsByX = abs(sideIntersectPointForFirstSegment.x - sideIntersectPointForSecondSegment.x);
-          auto distanceBetweenIntersectPointsByY = abs(sideIntersectPointForFirstSegment.y - sideIntersectPointForSecondSegment.y);
-
-          if (distanceBetweenIntersectPointsByX < cEpsilon || abs(distanceBetweenIntersectPointsByX - sidesDistance) < cEpsilon)
-          {
-            if (distanceBetweenIntersectPointsByY < cEpsilon || abs(distanceBetweenIntersectPointsByY - sidesDistance) < cEpsilon)
-            {
-              hasOppositeSegment = true;
-              break;
-            }
-          }
-        }
-        else
-        {
-          auto&& firstSegmentStartPoint = std::get<1>(segmentForFirstSide);
-          auto&& secondSegmentStartPoint = std::get<1>(segmentForSecondSide);
-
-          auto distanceBetweenSegmentsByX = abs(firstSegmentStartPoint.x - secondSegmentStartPoint.x);
-          auto distanceBetweenSegmentsByY = abs(firstSegmentStartPoint.y - secondSegmentStartPoint.y);
-
-          if (distanceBetweenSegmentsByX < cEpsilon || abs(distanceBetweenSegmentsByX - sidesDistance) < cEpsilon)
-          {
-            if (distanceBetweenSegmentsByY < cEpsilon || abs(distanceBetweenSegmentsByY - sidesDistance) < cEpsilon)
-            {
-              hasOppositeSegment = true;
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    if (!hasOppositeSegment)
-    {
-      invalidSegmentIndices.insert(std::get<5>(segmentForFirstSide));
-      isOk = false;
-    }
+    isOk &= checkSegments(secondSideSegments, firstSideSegments, sidesDistance, invalidSegmentIndices);
   }
 
   return isOk;
