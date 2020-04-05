@@ -97,15 +97,7 @@ namespace
 		for (auto& pattern : patternCollection)
 		{
 			pattern.calculateTileSize();
-			if (pattern.length()[0] <= 0.1)
-			{
-				pattern.length()[0] = pattern.length()[1];
-			}
-
-			if (pattern.length()[1] <= 0.1)
-			{
-				pattern.length()[1] = pattern.length()[0];
-			}
+			
 		}
 
     return patternCollection;
