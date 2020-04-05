@@ -288,7 +288,7 @@ std::vector<int> CPatLine::getIntervalNumbers(double arg)
   else
   {
     auto currentPoint = -startPoint - 2*fragmentLen;
-    while (arg > currentPoint)
+    while (arg - m_lineEps > currentPoint)
     {
       for (int i = 0; i < (int)m_intervals.size(); i++)
       {
