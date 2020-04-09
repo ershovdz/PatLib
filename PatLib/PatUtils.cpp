@@ -257,7 +257,7 @@ std::vector<std::tuple<int, Point, Point>> CTileLineAligner::getAligned(const st
   if (minInvalidSegments == 0)
     return result;
 
-  while (minInvalidSegments >= invalidSegmentIndices.size() && minInvalidSegments != 0 && alignEps < 200)
+  while (minInvalidSegments >= invalidSegmentIndices.size() && minInvalidSegments != 0 && alignEps < 1.)
   {
     invalidSegmentIndices.clear();
     alignEps *= 2.;

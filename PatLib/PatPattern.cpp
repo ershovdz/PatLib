@@ -80,12 +80,12 @@ void CPatPattern::calculateTileSize()
 		}
 	}
 
-  if (m_tileSize[0] <= 0.1)
+  if (m_tileSize[0] <= 0.5)
   {
     m_tileSize[0] = length()[1];
   }
 
-  if (m_tileSize[1] <= 0.1)
+  if (m_tileSize[1] <= 0.5)
   {
     m_tileSize[1] = m_tileSize[0];
   }
