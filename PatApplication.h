@@ -152,7 +152,7 @@ private:
 	
   double m_deltaX{ 0.f };
   double m_deltaY{ 0.f };
-	std::vector<double> MaxRect { 2.474874, 2.474874 };
+	std::vector<double> MaxRect { 1, 1 };
 };
 
 

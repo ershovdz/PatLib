@@ -88,6 +88,7 @@ void CPatFamily::recalculateLength()
         periodY = (++i)*fragmentLength / m_delta.first;
       } while (abs(periodY - std::round(periodY)) > cDelta);
     }
+
     m_length[1] = abs(periodY * m_delta.second);
 
     if (m_minPeriod[0] == 0.f && m_minPeriod[1] == 0.f)
@@ -111,6 +112,7 @@ void CPatFamily::recalculateLength()
         periodX = (++i)*fragmentLength / m_delta.first;
       } while (abs(periodX - std::round(periodX)) > cDelta);
     }
+
     m_length[0] = abs(periodX * m_delta.second);
     m_length[1] = fragmentLength;
 
@@ -145,12 +147,12 @@ void CPatFamily::recalculateLength()
 
       ornamentBroken = isOrnamentBroken(periodX, periodY);
 
-      /*if (periodX > 10.f*fragmentLength || periodY > 10.f*fragmentLength)
+      if (periodX > 10.f*fragmentLength || periodY > 10.f*fragmentLength)
       {
         m_length[0] = m_minPeriod[0];
         m_length[1] = m_minPeriod[1];
         break;
-      }*/
+      }
 
     } while (abs(maxLenX - std::round(maxLenX)) > cDelta ||
       abs(maxLenY - std::round(maxLenY)) > cDelta ||

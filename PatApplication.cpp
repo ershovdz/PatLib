@@ -304,7 +304,7 @@ HRESULT DemoApp::CreateDeviceResources()
         &pGradientStops
       );
     }
-    std::wstring path(L"./data/sand.pat");
+    std::wstring path(L"./data/all_.pat");
     m_patterns = CPatFileParser::loadPatterns(path);
 
     if (SUCCEEDED(hr))
@@ -352,7 +352,10 @@ HRESULT DemoApp::CreateGridPatternBrush(
   MaxRect = pattern.length();
   std::vector<double> MaxRectE = { MaxRect[0] + m_eps, MaxRect[1] + m_eps };
   auto aspectE = MaxRectE[0] / MaxRectE[1];
-
+  if (aspectE < 0.01)
+  {
+    aspectE = 1;
+  }
   double tileWidth = 400.0f;
   double tileHeight = tileWidth/aspectE;
   hr = pRenderTarget->CreateCompatibleRenderTarget(
@@ -384,7 +387,7 @@ HRESULT DemoApp::CreateGridPatternBrush(
       auto minH = -tileHeight / MaxRectE[1];
       auto families = pattern.families();
       double pointAddition = 0;
-      double l = 1.f;
+      double l = 2.f;
 
       std::unordered_set<int> invalidSegmentIndices;
       for (auto index = 0; index < families.size(); ++index)
@@ -518,9 +521,13 @@ HRESULT DemoApp::OnRender()
     hr = CreateGridPatternBrush(m_pRenderTarget, &m_pGridPatternBitmapBrush);
     std::vector<double> MaxRectE = { MaxRect[0] + m_eps, MaxRect[1] + m_eps };
     auto aspectE = MaxRectE[0] / MaxRectE[1];
+    if (aspectE < 0.01)
+    {
+      aspectE = 1;
+    }
+
     double tileWidth = 400.0f;
     double tileHeight = tileWidth/aspectE;
-
 
 
     //auto rect = D2D1::RectF(0 /*- m_delta* hor*/, 0/* - m_delta * vert*/, (float)(tileWidth) /*- m_delta * hor*/, (float)(tileHeight) /*- m_delta * vert*/);

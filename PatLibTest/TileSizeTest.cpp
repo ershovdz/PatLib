@@ -2015,13 +2015,14 @@ TEST(TileSizeTest, Brick_Modular_FlemishDiagonal_C)
 
   EXPECT_TRUE(!families.empty());
 
+  std::unordered_set<int> invalidSegmentIndices;
   for (auto& f : families)
   {
     auto tileSgments = f.generateSegments(tileSize);
-
-    std::unordered_set<int> invalidSegmentIndices;
-    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+    CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
+
+  EXPECT_TRUE(invalidSegmentIndices.size() == 2);
 }
 
 TEST(TileSizeTest, Brick_Modular_Garden_C)
@@ -2466,8 +2467,10 @@ TEST(TileSizeTest, CMU_SCREEN)
   for (auto& f : families)
   {
     auto tileSgments = f.generateSegments(tileSize);
-    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+    CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
+
+  EXPECT_TRUE(invalidSegmentIndices.size() == 5);
 }
 
 TEST(TileSizeTest, CONCRETE)
@@ -2553,8 +2556,10 @@ TEST(TileSizeTest, Pavers_SuperDecor)
   for (auto& f : families)
   {
     auto tileSgments = f.generateSegments(tileSize);
-    EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
+    CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
+
+  EXPECT_TRUE(invalidSegmentIndices.size() == 1);
 }
 
 TEST(TileSizeTest, RoofingSiding_Metal_Ribbed)
@@ -4626,6 +4631,31 @@ TEST(TileSizeTest, GW)
     auto tileSgments = f.generateSegments(tileSize);
     EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
   }
+}
+
+TEST(TileSizeTest, ARCONC)
+{
+  std::wstring path(L"../data/ar-conc.pat");
+  auto patterns = CPatFileParser::loadPatterns(path);
+
+  EXPECT_TRUE(patterns.size() == 1);
+
+  auto&& pattern = patterns[0];
+  auto families = pattern.families();
+  auto tileSize = pattern.length();
+
+  EXPECT_TRUE(!families.empty());
+
+  std::unordered_set<int> invalidSegmentIndices;
+  for (auto& f : families)
+  {
+    auto tileSgments = f.generateSegments(tileSize);
+
+    
+    CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
+  }
+
+  EXPECT_TRUE(invalidSegmentIndices.size() == 6);
 }
 
 //TEST(TileSizeTest, RUBBLE)
