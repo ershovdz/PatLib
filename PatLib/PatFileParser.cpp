@@ -97,14 +97,11 @@ namespace
 		for (auto& pattern : patternCollection)
 		{
 			pattern.calculateTileSize();
-			
 		}
 
     return patternCollection;
   }
 }
-
-
 
 std::vector<CPatPattern> CPatFileParser::loadPatterns(const std::wstring& filename)
 {
@@ -126,4 +123,3 @@ std::vector<CPatPattern> CPatFileParser::loadPatterns(const std::wstring& filena
 
   return patternCollection;
 }
-

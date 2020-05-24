@@ -22,10 +22,12 @@
     std::vector<CPatFamily>& families() { return m_families; }
     std::vector<double>& length();
     void recalculate(double unitKoef);
+    void calculateTileSize();
 
-		void calculateTileSize();
-//		void calculateTileSizeY();
-		double m_TS;
+  private:
+    int countErrors(const std::vector<double>& tileSize);
+    std::vector<double> calculateTileSize1();
+    std::vector<double> calculateTileSize2();
   private:
     std::wstring m_name;
     std::wstring m_description;

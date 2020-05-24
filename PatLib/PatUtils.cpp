@@ -130,13 +130,19 @@ namespace
 
       auto&& segmentForFirstSide = firstSideSegments[i];
       double firstSegmentLength = std::get<1>(segmentForFirstSide).distanceTo(std::get<2>(segmentForFirstSide));
+      bool firstVertical = (std::get<1>(segmentForFirstSide).x - std::get<2>(segmentForFirstSide).x) == 0;
+      bool firstHorizontal = (std::get<1>(segmentForFirstSide).y - std::get<2>(segmentForFirstSide).y) == 0;
 
       for (int j = 0; j < secondSideSegments.size(); ++j)
       {
         auto&& segmentForSecondSide = secondSideSegments[j];
         double secondSegmentLength = std::get<1>(segmentForSecondSide).distanceTo(std::get<2>(segmentForSecondSide));
+        bool secondVertical = (std::get<1>(segmentForSecondSide).x - std::get<2>(segmentForSecondSide).x) == 0;
+        bool secondHorizontal = (std::get<1>(segmentForSecondSide).y - std::get<2>(segmentForSecondSide).y) == 0;
 
-        if (std::get<0>(segmentForFirstSide) == std::get<0>(segmentForSecondSide))
+        if (std::get<0>(segmentForFirstSide) == std::get<0>(segmentForSecondSide) ||
+          (firstVertical && (firstVertical == secondVertical)) ||
+          (firstHorizontal && firstHorizontal == secondHorizontal))
         {
           // single-interval segments
           if (firstSegmentLength > sidesDistance && secondSegmentLength > sidesDistance)

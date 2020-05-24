@@ -75,12 +75,52 @@ void CPatFamily::recalculateLength()
   if (abs(sin(angleRad)) < cEpsilon)
   {
     m_length[0] = fragmentLength;
-    m_length[1] = abs(2 * m_delta.second);
+    double periodY = 0.f;
+    if (m_delta.first == 0)
+    {
+      periodY = 2;
+    }
+    else
+    {
+      int i = 0;
+      do
+      {
+        periodY = (++i)*fragmentLength / m_delta.first;
+      } while (abs(periodY - std::round(periodY)) > cDelta);
+    }
+
+    m_length[1] = abs(periodY * m_delta.second);
+
+    if (m_minPeriod[0] == 0.f && m_minPeriod[1] == 0.f)
+    {
+      m_minPeriod[0] = m_length[0];
+      m_minPeriod[1] = m_length[1];
+    }
   }
   else if (abs(cos(angleRad)) < cEpsilon)
   {
-    m_length[0] = abs(2 * m_delta.second);
+    double periodX = 0.f;
+    if (m_delta.first == 0)
+    {
+      periodX = 2;
+    }
+    else
+    {
+      int i = 0;
+      do
+      {
+        periodX = (++i)*fragmentLength / m_delta.first;
+      } while (abs(periodX - std::round(periodX)) > cDelta);
+    }
+
+    m_length[0] = abs(periodX * m_delta.second);
     m_length[1] = fragmentLength;
+
+    if (m_minPeriod[0] == 0.f && m_minPeriod[1] == 0.f)
+    {
+      m_minPeriod[0] = m_length[0];
+      m_minPeriod[1] = m_length[1];
+    }
   }
   else if (abs(sin(angleRad)) > cEpsilon)
   {
@@ -106,6 +146,13 @@ void CPatFamily::recalculateLength()
       maxLenY = abs(periodY / sin(angleRad)) / fragmentLength;
 
       ornamentBroken = isOrnamentBroken(periodX, periodY);
+
+      if (periodX > 10.f*fragmentLength || periodY > 10.f*fragmentLength)
+      {
+        m_length[0] = m_minPeriod[0];
+        m_length[1] = m_minPeriod[1];
+        break;
+      }
 
     } while (abs(maxLenX - std::round(maxLenX)) > cDelta ||
       abs(maxLenY - std::round(maxLenY)) > cDelta ||
@@ -211,7 +258,8 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
 CPatLine CPatFamily::getDual(CPatLine& line, const std::vector<CPatLine>& linesForPeriod, double periodX, double periodY)
 {
   CPatLine res;
-  
+  double delta = cDelta*std::min(periodX, periodY);
+
   auto lMX = line.func(line.m_t0);
   auto lMXMod1 = CPatUtils::byMod(lMX.first, periodX);
   auto lMXMod2 = CPatUtils::byMod(lMX.second, periodY);
@@ -229,7 +277,7 @@ CPatLine CPatFamily::getDual(CPatLine& line, const std::vector<CPatLine>& linesF
     auto lYMod2 = CPatUtils::byMod(lY.second, periodY);
     
     if (l.m_index != line.m_index &&
-      abs(l.m_t1 - l.m_t0) > cDelta &&
+      abs(l.m_t1 - l.m_t0) > delta &&
       l.m_definitions.size() > 0 &&
       ((abs(lXMod1 - lMYMod1) < cEpsilon && abs(lXMod2 - lMYMod2) < cEpsilon) ||
       (abs(lYMod1 - lMXMod1) < cEpsilon && abs(lYMod2 - lMXMod2) < cEpsilon)))
