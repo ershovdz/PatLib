@@ -91,11 +91,8 @@ void CPatFamily::recalculateLength()
 
     m_length[1] = abs(periodY * m_delta.second);
 
-    if (m_minPeriod[0] == 0.f && m_minPeriod[1] == 0.f)
-    {
-      m_minPeriod[0] = m_length[0];
-      m_minPeriod[1] = m_length[1];
-    }
+    m_minPeriod = m_length;
+    m_clippedLength = m_length;
   }
   else if (abs(cos(angleRad)) < cEpsilon)
   {
@@ -116,11 +113,8 @@ void CPatFamily::recalculateLength()
     m_length[0] = abs(periodX * m_delta.second);
     m_length[1] = fragmentLength;
 
-    if (m_minPeriod[0] == 0.f && m_minPeriod[1] == 0.f)
-    {
-      m_minPeriod[0] = m_length[0];
-      m_minPeriod[1] = m_length[1];
-    }
+    m_minPeriod = m_length;
+    m_clippedLength = m_length;
   }
   else if (abs(sin(angleRad)) > cEpsilon)
   {

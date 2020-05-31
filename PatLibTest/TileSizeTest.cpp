@@ -162,7 +162,6 @@ TEST(TileSizeTest, RENGA_DOTS)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  //EXPECT_TRUE(invalidSegmentIndices.size() == 2);
   EXPECT_TRUE(invalidSegmentIndices.size() == 0);
 }
 
@@ -582,8 +581,7 @@ TEST(TileSizeTest, ARROOF)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  //EXPECT_TRUE(invalidSegmentIndices.size() == 13);
-  EXPECT_TRUE(invalidSegmentIndices.size() == 0);
+  EXPECT_TRUE(invalidSegmentIndices.size() == 13);
 }
 
 TEST(TileSizeTest, ARSHKE)
@@ -875,7 +873,6 @@ TEST(TileSizeTest, Wood2)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  //EXPECT_TRUE(invalidSegmentIndices.size() == 8);
   EXPECT_TRUE(invalidSegmentIndices.size() == 0);
 }
 
@@ -2025,8 +2022,7 @@ TEST(TileSizeTest, Brick_Modular_FlemishDiagonal_C)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  //EXPECT_TRUE(invalidSegmentIndices.size() == 2);
-  EXPECT_TRUE(invalidSegmentIndices.size() == 0);
+  EXPECT_TRUE(invalidSegmentIndices.size() == 2);
 }
 
 TEST(TileSizeTest, Brick_Modular_Garden_C)
@@ -2474,8 +2470,7 @@ TEST(TileSizeTest, CMU_SCREEN)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  //EXPECT_TRUE(invalidSegmentIndices.size() == 5);
-  EXPECT_TRUE(invalidSegmentIndices.size() == 1);
+  EXPECT_TRUE(invalidSegmentIndices.size() == 0);
 }
 
 TEST(TileSizeTest, CONCRETE)
@@ -2499,7 +2494,6 @@ TEST(TileSizeTest, CONCRETE)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  //EXPECT_TRUE(invalidSegmentIndices.size() == 32);
   EXPECT_TRUE(invalidSegmentIndices.size() == 28);
 }
 
@@ -2565,7 +2559,6 @@ TEST(TileSizeTest, Pavers_SuperDecor)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  /*EXPECT_TRUE(invalidSegmentIndices.size() == 1);*/
   EXPECT_TRUE(invalidSegmentIndices.size() == 0);
 }
 
@@ -2717,7 +2710,6 @@ TEST(TileSizeTest, CS04)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  //EXPECT_TRUE(invalidSegmentIndices.size() == 2);
   EXPECT_TRUE(invalidSegmentIndices.size() == 0);
 }
 
@@ -2784,7 +2776,6 @@ TEST(TileSizeTest, Concret1)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  //EXPECT_TRUE(invalidSegmentIndices.size() == 2);
   EXPECT_TRUE(invalidSegmentIndices.size() == 0);
 }
 
@@ -3735,7 +3726,7 @@ TEST(TileSizeTest, ArTile13)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  EXPECT_TRUE(invalidSegmentIndices.size() == 1);
+  EXPECT_TRUE(invalidSegmentIndices.size() == 0);
 }
 
 TEST(TileSizeTest, ArTile14)
@@ -3758,7 +3749,6 @@ TEST(TileSizeTest, ArTile14)
     CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  /*EXPECT_TRUE(invalidSegmentIndices.size() == 1);*/
   EXPECT_TRUE(invalidSegmentIndices.size() == 0);
 }
 
@@ -3781,8 +3771,6 @@ TEST(TileSizeTest, ArTile15)
     auto tileSgments = f.generateSegments(tileSize);
     EXPECT_TRUE(CTileChecker::checkFamilySegments(tileSgments, tileSize[0], tileSize[1], invalidSegmentIndices));
   }
-
-  //EXPECT_TRUE(invalidSegmentIndices.size() == 5);
 }
 
 TEST(TileSizeTest, ArTile16)
