@@ -20,31 +20,31 @@ std::vector<double>& CPatPattern::length()
 
 void CPatPattern::calculateTileSize()
 {
-  auto tileSize1 = calculateTileSize1();
-  auto numErrors1 = countErrors(tileSize1);
-  if (numErrors1 > 0)
+  auto tileSizeWithClippedLength = calculateTileSizeUsingClippedLength();
+  auto numErrorsWithClippedLength = countErrors(tileSizeWithClippedLength);
+  if (numErrorsWithClippedLength > 0)
   {
-    auto tileSize2 = calculateTileSize2();
-    auto numErrors2 = countErrors(tileSize2);
-    if (numErrors2 < numErrors1)
+    auto tileSizeWithLength = calculateTileSizeUsingLength();
+    auto numErrorsWithLength = countErrors(tileSizeWithLength);
+    if (numErrorsWithLength < numErrorsWithClippedLength)
     {
-      m_tileSize[0] = tileSize2[0];
-      m_tileSize[1] = tileSize2[1];
+      m_tileSize[0] = tileSizeWithLength[0];
+      m_tileSize[1] = tileSizeWithLength[1];
     }
     else
     {
-      m_tileSize[0] = tileSize1[0];
-      m_tileSize[1] = tileSize1[1];
+      m_tileSize[0] = tileSizeWithClippedLength[0];
+      m_tileSize[1] = tileSizeWithClippedLength[1];
     }
   }
   else
   {
-    m_tileSize[0] = tileSize1[0];
-    m_tileSize[1] = tileSize1[1];
+    m_tileSize[0] = tileSizeWithClippedLength[0];
+    m_tileSize[1] = tileSizeWithClippedLength[1];
   }
 }
 
-std::vector<double> CPatPattern::calculateTileSize1()
+std::vector<double> CPatPattern::calculateTileSizeUsingClippedLength()
 {
   std::vector<double> res{ 0.f, 0.f };
 
@@ -53,18 +53,18 @@ std::vector<double> CPatPattern::calculateTileSize1()
     std::map<double, int> allLengths;
     if (m_families.size() == 1)
     {
-      allLengths[m_families[0].length()[i]] = 1;
+      allLengths[m_families[0].clippedLength()[i]] = 1;
     }
     else
     {
-      for (auto& fam : m_families)
+      for (auto& family : m_families)
       {
-        if (fam.length()[i] > 0)
+        if (family.clippedLength()[i] > 0)
         {
           bool found = false;
           for (auto& len : allLengths)
           {
-            if (abs(len.first - fam.length()[i]) < cDelta)
+            if (abs(len.first - family.clippedLength()[i]) < cDelta)
             {
               found = true;
               allLengths[len.first]++;
@@ -73,7 +73,7 @@ std::vector<double> CPatPattern::calculateTileSize1()
           }
           if (!found)
           {
-            allLengths[fam.length()[i]]++;
+            allLengths[family.clippedLength()[i]]++;
           }
         }
       }
@@ -81,14 +81,14 @@ std::vector<double> CPatPattern::calculateTileSize1()
 
     // Fill minLengths
     std::map<double, int> minLengths;
-    for (auto& fam : m_families)
+    for (auto& family : m_families)
     {
-      if (fam.m_minPeriod[i] > 0)
+      if (family.m_minPeriod[i] > 0)
       {
         bool found = false;
         for (auto& len : minLengths)
         {
-          if (abs(len.first - fam.m_minPeriod[i]) < cDelta)
+          if (abs(len.first - family.m_minPeriod[i]) < cDelta)
           {
             found = true;
             minLengths[len.first]++;
@@ -97,7 +97,7 @@ std::vector<double> CPatPattern::calculateTileSize1()
         }
         if (!found)
         {
-          minLengths[fam.m_minPeriod[i]]++;
+          minLengths[family.m_minPeriod[i]]++;
         }
       }
     }
@@ -155,7 +155,7 @@ std::vector<double> CPatPattern::calculateTileSize1()
   return res;
 }
 
-std::vector<double> CPatPattern::calculateTileSize2()
+std::vector<double> CPatPattern::calculateTileSizeUsingLength()
 {
   std::vector<double> res{ 0.f, 0.f };
 
@@ -243,15 +243,12 @@ void CPatPattern::recalculate(double unitKoef)
 
 int CPatPattern::countErrors(const std::vector<double>& tileSize)
 {
-  int res = 0;
   std::unordered_set<int> invalidSegmentIndices;
   for (auto& f : m_families)
   {
     auto alignedFamilySegments = f.generateSegments(tileSize);
-    bool isOk = CTileChecker::checkFamilySegments(alignedFamilySegments, tileSize[0], tileSize[1], invalidSegmentIndices);
-    res += 1 ? alignedFamilySegments.size() == 0 : 0;
-    res += invalidSegmentIndices.size();
+    CTileChecker::checkFamilySegments(alignedFamilySegments, tileSize[0], tileSize[1], invalidSegmentIndices);
   }
 
-  return res;
+  return invalidSegmentIndices.size();
 }

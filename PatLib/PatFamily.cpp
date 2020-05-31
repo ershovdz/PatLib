@@ -147,11 +147,11 @@ void CPatFamily::recalculateLength()
 
       ornamentBroken = isOrnamentBroken(periodX, periodY);
 
-      if (periodX > 10.f*fragmentLength || periodY > 10.f*fragmentLength)
+      if ((periodX > 10.f*fragmentLength || periodY > 10.f*fragmentLength) &&
+        (m_clippedLength[0] < 0. && m_clippedLength[1] < 0.))
       {
-        m_length[0] = m_minPeriod[0];
-        m_length[1] = m_minPeriod[1];
-        break;
+        m_clippedLength[0] = periodX;
+        m_clippedLength[1] = periodY;
       }
 
     } while (abs(maxLenX - std::round(maxLenX)) > cDelta ||
@@ -159,7 +159,10 @@ void CPatFamily::recalculateLength()
       ornamentBroken);
 
     m_length[0] = periodX;
-    m_length[1] = periodY;    
+    m_length[1] = periodY;
+
+    if (m_clippedLength[0] < 0. && m_clippedLength[1] < 0.)
+      m_clippedLength = m_length;
   }
 }
 
@@ -175,7 +178,7 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
 
 
   //bool hasGeometry = false;
-  
+
   CPatLine lPlus, lMinus;
   for (auto& line : linesForPeriod)
   {
@@ -217,7 +220,7 @@ bool CPatFamily::isOrnamentBroken(double periodX, double periodY)
         if (intervalsMinus[i] != intervalsPlus[i])
           return true;
       }
-      
+
       res = false;
     }
     else
@@ -275,7 +278,7 @@ CPatLine CPatFamily::getDual(CPatLine& line, const std::vector<CPatLine>& linesF
     auto lY = l.func(l.m_t1);
     auto lYMod1 = CPatUtils::byMod(lY.first, periodX);
     auto lYMod2 = CPatUtils::byMod(lY.second, periodY);
-    
+
     if (l.m_index != line.m_index &&
       abs(l.m_t1 - l.m_t0) > delta &&
       l.m_definitions.size() > 0 &&
@@ -369,7 +372,7 @@ std::vector<CPatLine> CPatFamily::lines(const std::vector<double>& tileSize)
   {
     res.emplace_back(m_angle, m_origin, m_delta, m_intervals, i, std::vector<double>{ tileSize[0] /*+ 0.01*/, tileSize[1] /*+ 0.01*/ });
   }
-  
+
   return res;
 }
 
@@ -399,6 +402,11 @@ void CPatFamily::recalculate(double unitKoef)
 std::vector<double> CPatFamily::length()
 {
   return m_length;
+}
+
+std::vector<double> CPatFamily::clippedLength()
+{
+  return m_clippedLength;
 }
 
 bool CPatFamily::operator==(const CPatFamily& other) const

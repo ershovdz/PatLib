@@ -26,8 +26,8 @@
 
   private:
     int countErrors(const std::vector<double>& tileSize);
-    std::vector<double> calculateTileSize1();
-    std::vector<double> calculateTileSize2();
+    std::vector<double> calculateTileSizeUsingClippedLength();
+    std::vector<double> calculateTileSizeUsingLength();
   private:
     std::wstring m_name;
     std::wstring m_description;

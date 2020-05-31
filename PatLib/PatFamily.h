@@ -21,6 +21,7 @@ public:
   void recalculateLength();
   void recalculate(double unitKoef);
   std::vector<double> length();
+  std::vector<double> clippedLength();
 
   std::vector<CPatLine> lines(const std::vector<double>& tileSize);
   std::vector<std::tuple<int, Point, Point>> generateSegments(const std::vector<double>& tileSize);
@@ -33,5 +34,6 @@ public:
   std::pair<double, double> m_delta;
   std::vector<double> m_intervals;
   std::vector<double> m_length{ -1.f,-1.f };
+  std::vector<double> m_clippedLength{ -1.f,-1.f };
   std::vector<double> m_minPeriod{ 0.f, 0.f };
 };
